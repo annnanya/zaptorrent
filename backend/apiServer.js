@@ -1,10 +1,13 @@
+import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import torrentEngine from './torrentEngine.js';
 
+
 const app = express();
 const PORT = 3001;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 // Add new torrent (magnet link or .torrent path)
