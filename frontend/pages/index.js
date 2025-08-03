@@ -18,6 +18,17 @@ export default function Home() {
     }
   };
 
+  const removeTorrent = async (infoHash, deleteFiles) => {
+    try {
+      await axios.post(`${API_BASE}/remove`, { infoHash, deleteFiles });
+      setMessage('Torrent removed');
+      fetchTorrents();
+    } catch (err) {
+      console.error('Error removing torrent:', err.message);
+      setMessage('Failed to remove torrent');
+    }
+  };
+
   const handleAddTorrent = async () => {
     if (!torrentId) return;
     try {
@@ -92,9 +103,18 @@ export default function Home() {
         {torrents.map((t) => (
           <li key={t.infoHash} style={{ marginBottom: 10 }}>
             <strong>{t.name}</strong><br />
-            Progress: {t.progress}% {t.done ? '✅' : '⏳'}
+            Progress: {t.progress}% {t.done ? '✅' : '⏳'}<br />
+            Peers: {t.peers}<br />
+            Seeders: {t.seeders} | Leechers: {t.leechers}<br />
+            <button onClick={() => removeTorrent(t.infoHash, false)} style={{ marginRight: 8 }}>
+              ❌ Remove
+            </button>
+            <button onClick={() => removeTorrent(t.infoHash, true)}>
+              🗑️ Remove + Delete File
+            </button>
           </li>
         ))}
+
       </ul>
     </div>
   );

@@ -1,8 +1,12 @@
+import fs from 'fs';
+import path from 'path';
 import cors from 'cors';
+import multer from 'multer';
 import express from 'express';
 import bodyParser from 'body-parser';
 import torrentEngine from './torrentEngine.js';
-import multer from 'multer';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
 
@@ -49,6 +53,26 @@ app.post('/upload', upload.single('torrentFile'), async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+app.post('/remove', async (req, res) => {
+    const { infoHash, deleteFiles } = req.body;
+    const torrent = torrentEngine.torrents[infoHash];
+    if (!torrent) return res.status(404).json({ error: 'Torrent not found' });
+
+    torrentEngine.client.remove(infoHash, async () => {
+        if (deleteFiles) {
+            const folderPath = path.join(torrentEngine.downloadDir, torrent.name);
+            try {
+                await fs.promises.rm(folderPath, { recursive: true, force: true });
+            } catch (err) {
+                console.warn('⚠️ Failed to delete files:', err.message);
+            }
+        }
+
+        delete torrentEngine.torrents[infoHash];
+        res.json({ message: 'Torrent removed' });
+    });
 });
 
 

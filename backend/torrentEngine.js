@@ -27,6 +27,8 @@ class TorrentEngine {
         const torrent = this.torrents[infoHash];
         if (!torrent) return null;
 
+        const totalPeers = torrent.numPeers;
+
         return {
             name: torrent.name,
             downloaded: torrent.downloaded,
@@ -35,6 +37,9 @@ class TorrentEngine {
             downloadSpeed: torrent.downloadSpeed,
             timeRemaining: torrent.timeRemaining,
             done: torrent.done,
+            peers: totalPeers,
+            seeders: torrent.done ? 0 : totalPeers, // crude estimate
+            leechers: torrent.done ? totalPeers : 0, // crude estimate
         };
     }
 
