@@ -1,7 +1,6 @@
-// backend/apiServer.js
-const express = require('express');
-const bodyParser = require('body-parser');
-const torrentEngine = require('./torrentEngine');
+import express from 'express';
+import bodyParser from 'body-parser';
+import torrentEngine from './torrentEngine.js';
 
 const app = express();
 const PORT = 3001;
@@ -34,5 +33,5 @@ app.get('/list', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Torrent API server running on http://localhost:${PORT}`);
+    console.log(`🚀 Torrent API server running at http://localhost:${PORT}`);
 });

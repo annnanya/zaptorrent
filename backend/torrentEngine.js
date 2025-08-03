@@ -1,6 +1,8 @@
-// backend/torrentEngine.js
-const WebTorrent = require('webtorrent');
-const path = require('path');
+import WebTorrent from 'webtorrent';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 class TorrentEngine {
     constructor(downloadDir = path.join(__dirname, '../downloads')) {
@@ -13,7 +15,7 @@ class TorrentEngine {
         return new Promise((resolve, reject) => {
             const torrent = this.client.add(torrentId, { path: this.downloadDir });
 
-            torrent.on('error', (err) => reject(err));
+            torrent.on('error', reject);
             torrent.on('ready', () => {
                 this.torrents[torrent.infoHash] = torrent;
                 resolve(torrent);
@@ -46,4 +48,4 @@ class TorrentEngine {
     }
 }
 
-module.exports = new TorrentEngine();
+export default new TorrentEngine();

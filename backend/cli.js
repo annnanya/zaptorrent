@@ -1,5 +1,4 @@
-// backend/cli.js
-const torrentEngine = require('./torrentEngine');
+import torrentEngine from './torrentEngine.js';
 
 const torrentId = process.argv[2];
 if (!torrentId) {
